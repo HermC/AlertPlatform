@@ -1,0 +1,51 @@
+# default false
+release_mode = false
+
+# default DEBUG, DEBUG INFO WARN ERROR OFF
+log_level = "DEBUG"
+
+# REDIS,FILE,COOKIE(COOKIE Default)
+session_store = "REDIS"
+
+# REDIS,MEMCACHED,IN_MEMORY(IN_MEMORY Default)
+cache_store = "REDIS"
+
+[app]
+name = "Alert Platform"
+
+[server]
+graceful = true
+addr = ":8080"
+
+# Domains
+domain_api = "localhost"
+domain_web = "localhost"
+domain_socket = "localhost"
+
+[static]
+# BINDATA,FILE(FILE Default)
+type = "BINDATA"
+
+[tmpl]
+# PONGO2,TEMPLATE(TEMPLATE Default)
+type = "PONGO2"
+# BINDATA,FILE(FILE Default)
+data = "BINDATA"
+# PONGO2(template/pongo2),TEMPLATE(template)
+dir = "template/pongo2"
+# .html,.tpl
+suffix = ".html"
+
+[database]
+name = "alertplatform"
+user_name = "root"
+pwd  = "mf1832225"
+host = "172.19.125.172"
+port = "3306"
+
+[redis]
+server = "127.0.0.1:6379"
+pwd = ""
+
+[opentracing]
+disable = true
