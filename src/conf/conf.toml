@@ -11,16 +11,11 @@ session_store = "REDIS"
 cache_store = "REDIS"
 
 [app]
-name = "Alert Platform"
+name = "AlertPlatform"
 
 [server]
 graceful = true
 addr = ":8080"
-
-# Domains
-domain_api = "localhost"
-domain_web = "localhost"
-domain_socket = "localhost"
 
 [static]
 # BINDATA,FILE(FILE Default)
@@ -32,20 +27,13 @@ type = "PONGO2"
 # BINDATA,FILE(FILE Default)
 data = "BINDATA"
 # PONGO2(template/pongo2),TEMPLATE(template)
-dir = "template/pongo2"
+dir = "public/views/"
 # .html,.tpl
 suffix = ".html"
 
 [database]
-name = "alertplatform"
+name = "goweb_db"
 user_name = "root"
-pwd  = "mf1832225"
-host = "172.19.125.172"
+pwd  = "ANtd79gRXzS"
+host = "127.0.0.1"
 port = "3306"
-
-[redis]
-server = "127.0.0.1:6379"
-pwd = ""
-
-[opentracing]
-disable = true

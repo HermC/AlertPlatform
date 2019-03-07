@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	Conf config
-	defaultConfigFile = "conf/conf.toml"
+	Conf              config // holds the global app config.
+	defaultConfigFile = "conf.toml"
 )
 
 type config struct {
@@ -27,25 +27,32 @@ type config struct {
 	DB database `toml:"database"`
 	// 静态资源
 	Static static
-	// Redis
-	Redis redis
 }
+
+type app struct {
+	Name string `toml:"name"`
+}
+
 type server struct {
 	Graceful bool   `toml:"graceful"`
 	Addr     string `toml:"addr"`
+
 	DomainApi    string `toml:"domain_api"`
 	DomainWeb    string `toml:"domain_web"`
 	DomainSocket string `toml:"domain_socket"`
 }
+
 type static struct {
 	Type string `toml:"type"`
 }
+
 type tmpl struct {
 	Type   string `toml:"type"`   // PONGO2,TEMPLATE(TEMPLATE Default)
 	Data   string `toml:"data"`   // BINDATA,FILE(FILE Default)
 	Dir    string `toml:"dir"`    // PONGO2(template/pongo2),TEMPLATE(template)
 	Suffix string `toml:"suffix"` // .html,.tpl
 }
+
 type database struct {
 	Name     string `toml:"name"`
 	UserName string `toml:"user_name"`
@@ -53,45 +60,46 @@ type database struct {
 	Host     string `toml:"host"`
 	Port     string `toml:"port"`
 }
-type redis struct {
-	Server string `toml:"server"`
-	Pwd    string `toml:"pwd"`
-}
+
 
 func init() {
-
 }
 
+// initConfig initializes the app configuration by first setting defaults,
+// then overriding settings from the app config file, then overriding
+// It returns an error if any.
 func InitConfig(configFile string) error {
 	if configFile == "" {
 		configFile = defaultConfigFile
 	}
 
-	Conf = config {
+	// Set defaults.
+	Conf = config{
 		ReleaseMode: false,
-		LogLevel: "DEBUG",
+		LogLevel:    "DEBUG",
 	}
 
 	if _, err := os.Stat(configFile); err != nil {
-		return errors.New("config file error: " + err.Error())
+		return errors.New("config file err:" + err.Error())
 	} else {
-		log.Infof("load config from file: " + configFile)
+		log.Infof("load config from file:" + configFile)
 		configBytes, err := ioutil.ReadFile(configFile)
 		if err != nil {
-			return errors.New("config load error: " + err.Error())
+			return errors.New("config load err:" + err.Error())
 		}
 		_, err = toml.Decode(string(configBytes), &Conf)
 		if err != nil {
-			return errors.New("config decode error: " + err.Error())
+			return errors.New("config decode err:" + err.Error())
 		}
 	}
-
-	log.Infof("config data: %v", Conf)
+	// @TODO 配置检查
+	log.Infof("config data:%v", Conf)
 
 	return nil
 }
 
 func GetLogLvl() log.Lvl {
+	//DEBUG INFO WARN ERROR OFF
 	switch Conf.LogLevel {
 	case "DEBUG":
 		return log.DEBUG
@@ -104,7 +112,6 @@ func GetLogLvl() log.Lvl {
 	case "OF":
 		return log.OFF
 	}
-
 	return log.DEBUG
 }
 
@@ -116,10 +123,8 @@ const (
 	BINDATA = "BINDATA"
 	// File
 	FILE = "FILE"
-	// Redis
-	REDIS = "REDIS"
 	// Cookie
 	COOKIE = "COOKIE"
 	// In Memory
-	IN_MEMORY = "IN_MEMARY"
+	IN_MEMORY = "IN_MEMORY"
 )
